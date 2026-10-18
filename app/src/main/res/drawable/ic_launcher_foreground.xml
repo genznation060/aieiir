@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54">
+        <!-- Main Quiz Card Base (centered within 66dp zone: bounds x:26 to 82, y:24 to 84) -->
+        <!-- Quiz Board Base -->
+        <path
+            android:fillColor="#1E293B"
+            android:pathData="M29,27 H79 A5,5 0 0 1 84,32 V76 A5,5 0 0 1 79,81 H29 A5,5 0 0 1 24,76 V32 A5,5 0 0 1 29,27 Z" />
+        
+        <!-- Header Bar on Card -->
+        <path
+            android:fillColor="#0F172A"
+            android:pathData="M24,32 A5,5 0 0 1 29,27 H79 A5,5 0 0 1 84,32 V38 H24 Z" />
+
+        <!-- Medical Cross / Plus Badge in Top Left -->
+        <path
+            android:fillColor="#10B981"
+            android:pathData="M31,31 H35 V29 H37 V31 H41 V33 H37 V35 H35 V33 H31 Z" />
+
+        <!-- Quiz Question Bar -->
+        <path
+            android:fillColor="#34D399"
+            android:pathData="M31,44 H68 V47 H31 Z" />
+        <path
+            android:fillColor="#64748B"
+            android:pathData="M31,50 H55 V52 H31 Z" />
+
+        <!-- Option Rows -->
+        <!-- Option A: Standard Option -->
+        <path
+            android:fillColor="#334155"
+            android:pathData="M31,57 H77 V61 H31 Z" />
+        <!-- Option B (Correct highlighted with Emerald) -->
+        <path
+            android:fillColor="#10B981"
+            android:pathData="M31,64 H77 V69 H31 Z" />
+        <!-- Checkmark on correct option -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M34,66.5 L36,68.5 L40,64.5 L39.2,63.7 L36,66.9 L34.8,65.7 Z" />
+        <!-- Option C -->
+        <path
+            android:fillColor="#334155"
+            android:pathData="M31,72 H65 V76 H31 Z" />
+
+        <!-- Video Play Button Orb Floating Bottom-Right -->
+        <path
+            android:fillColor="#059669"
+            android:pathData="M64,60 A13,13 0 1 0 90,60 A13,13 0 1 0 64,60 Z" />
+        <path
+            android:fillColor="#10B981"
+            android:pathData="M66,60 A11,11 0 1 0 88,60 A11,11 0 1 0 66,60 Z" />
+        <!-- Play Triangle -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M74,54 L82,60 L74,66 Z" />
+    </group>
+</vector>

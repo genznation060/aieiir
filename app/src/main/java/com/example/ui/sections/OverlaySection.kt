@@ -1,0 +1,199 @@
+package com.example.ui.sections
+
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.model.OverlayConfig
+import com.example.ui.theme.EmeraldPrimary
+import com.example.ui.theme.MedicalSurfaceHighlight
+import com.example.ui.theme.MedicalSurfaceVariant
+import kotlin.math.roundToInt
+
+@Composable
+fun OverlaySection(
+    overlay: OverlayConfig,
+    imageUri: Uri?,
+    onUpdateOverlay: (OverlayConfig) -> Unit,
+    onSelectImage: (Uri?) -> Unit
+) {
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        onSelectImage(uri)
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = MedicalSurfaceVariant),
+            border = BorderStroke(1.dp, MedicalSurfaceHighlight),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(14.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Enable Right-Side Image / Diagram",
+                        color = Color.White,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Splits screen to display clinical anatomy, ECG, or chart",
+                        color = Color(0xFF94A3B8),
+                        fontSize = 11.sp
+                    )
+                }
+                Switch(
+                    checked = overlay.enableSideImage,
+                    onCheckedChange = { onUpdateOverlay(overlay.copy(enableSideImage = it)) },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = EmeraldPrimary,
+                        uncheckedTrackColor = MedicalSurfaceHighlight
+                    ),
+                    modifier = Modifier.testTag("switch_side_image")
+                )
+            }
+        }
+
+        AnimatedVisibility(visible = overlay.enableSideImage) {
+            Column(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+                // Split Ratio Slider
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    colors = CardDefaults.cardColors(containerColor = MedicalSurfaceVariant),
+                    border = BorderStroke(1.dp, MedicalSurfaceHighlight),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Image Width Ratio", color = Color.White, fontSize = 13.sp)
+                            Text(
+                                "${(overlay.splitRatio * 100).toInt()}% width",
+                                color = EmeraldPrimary,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Slider(
+                            value = overlay.splitRatio,
+                            onValueChange = { onUpdateOverlay(overlay.copy(splitRatio = (it * 100f).roundToInt() / 100f)) },
+                            valueRange = 0.25f..0.50f,
+                            colors = SliderDefaults.colors(
+                                thumbColor = EmeraldPrimary,
+                                activeTrackColor = EmeraldPrimary,
+                                inactiveTrackColor = MedicalSurfaceHighlight
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Select image button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(42.dp)
+                            .testTag("pick_diagram_photo_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddPhotoAlternate,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(if (imageUri != null) "Change Photo" else "Pick Diagram / Photo", fontSize = 12.sp)
+                    }
+
+                    if (imageUri != null) {
+                        OutlinedButton(
+                            onClick = { onSelectImage(null) },
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(1.dp, Color(0xFFEF4444)),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFEF4444)),
+                            modifier = Modifier.height(42.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove photo", modifier = Modifier.size(18.dp))
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                OutlinedTextField(
+                    value = overlay.fallbackPlaceholderText,
+                    onValueChange = { onUpdateOverlay(overlay.copy(fallbackPlaceholderText = it)) },
+                    label = { Text("Placeholder Caption / Diagram Label") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = EmeraldPrimary,
+                        unfocusedBorderColor = MedicalSurfaceHighlight,
+                        focusedContainerColor = MedicalSurfaceVariant,
+                        unfocusedContainerColor = MedicalSurfaceVariant,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
+                )
+            }
+        }
+    }
+}

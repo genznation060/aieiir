@@ -1,0 +1,6 @@
+{
+  "name": "MCQ Video Studio Pro",
+  "description": "High-performance MCQ and quiz video maker with ultra-fast offline hardware encoding, customizable timers, and medical education themes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
